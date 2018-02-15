@@ -1,0 +1,98 @@
+#map{
+  position: absolute;
+  top: 52px;
+  bottom: 0px;
+  left: 0px;
+  right: 0px;
+  background-color: #fdfdfd;
+}
+
+#main-nav{
+  background-color: #e67e22;
+}
+
+.sidebar {
+    position : absolute;
+    top : 52px;
+    bottom: 0;
+    border-right:1px solid rgb(231,231,231);
+    width: 300px;
+    left : -301px;;
+    transition : 100ms left;
+    padding: 0px;
+    z-index: 5;
+    background-color: #ffffff;
+    -webkit-box-shadow: 4px 4px 6px 0px rgba(0,0,0,0.6);
+    -moz-box-shadow: 4px 4px 6px 0px rgba(238,238,238,0.6);
+    box-shadow: 0px 0px 6px 0px rgba(0,0,0,0.6);
+  }
+
+.ol-zoom {
+    left: auto;
+    top: 16px;
+    right: 16px;
+    background-color: rgba(0,0,0,0.2);
+
+}
+.ol-zoom button{
+    background-color: #ffffff;
+    color: #000000;
+    border-radius: 35%;
+    border: 1px solid rgba(0,0,0,0.3);
+
+}
+
+.ol-control button{
+  width: 30px;
+  height: 30px;
+  margin: 0px;
+
+}
+
+.show {
+    left : 0;
+}
+
+.btn-group-justified {
+  display: flex;
+  width: 100%;
+  .btn,
+  .btn-group {
+    flex: 1;
+    .btn {
+      width: 100%;
+    }
+    .dropdown-menu {
+      left: auto;
+    }
+  }
+}
+
+@media (min-width:992px) {
+  .sidebar {
+      position : absolute;
+      top : 52px;
+      bottom: 0;
+      border-right:1px solid rgb(231,231,231);
+      width: 300px;
+      left : 0px;
+      transition : 100ms left;
+      padding: 0px;
+      z-index: 5;
+      background-color: #ffffff;
+      -webkit-box-shadow: none;
+      -moz-box-shadow: none;
+      box-shadow: none;
+
+    }
+    #map {
+        position: absolute;
+        top:52px;
+        left:260px;
+        right:0px;
+        bottom:0px;
+        z-index: 0;
+        transition : 100ms left;
+
+      }
+}
