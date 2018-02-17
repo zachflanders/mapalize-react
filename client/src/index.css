@@ -68,6 +68,19 @@
   }
 }
 
+.popover{
+  width: 300px;
+  bottom: 0px;
+  left: -126px !important;
+  top: auto !important;
+}
+
+
+.arrow{
+  margin-left: 117px !important;
+
+}
+
 @media (min-width:992px) {
   .sidebar {
       position : absolute;

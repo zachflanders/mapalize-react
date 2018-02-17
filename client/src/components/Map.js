@@ -10,6 +10,7 @@ import 'fontawesome/svg-with-js/js/fontawesome-all.js'
 var source = [];
 var map;
 var draw = [];
+var overlay;
 var layers = [
   new ol.layer.Tile({
     source: new ol.source.TileWMS({
@@ -36,6 +37,15 @@ class Map extends React.Component {
         view: new ol.View({
         })
       });
+    var container = document.getElementById('popover');
+    overlay = new ol.Overlay({
+      element: container,
+      autoPan: true,
+      autoPanAnimation: {
+        duration: 250
+      }
+    });
+    map.addOverlay(overlay)
   }
   render(){
     if(this.props.mapInfo.features && drawingLayersCreated == false){
@@ -123,12 +133,21 @@ class Map extends React.Component {
         draw[feature.name].on('drawend', function (e) {
           draw[feature.name].setActive(false);
           self.props.endEditState(feature);
+          var element2 = overlay.getElement();
+          if(e.feature.getGeometry().getType() == 'LineString'){
+            var coordinate = e.feature.getGeometry().getCoordinateAt(0.5);
+          }
+          else{
+            var coordinate = e.feature.getGeometry().getCoordinates();
+          }
+          overlay.setPosition(coordinate);
         });
 
       });
       featureLayers.forEach(function(layer){
         map.addLayer(layer);
-      })
+      });
+
       drawingLayersCreated = true;
     }
     else if(this.props.mapInfo.features && drawingLayersCreated == true){
@@ -154,7 +173,19 @@ class Map extends React.Component {
       }
     };
     return(
+      <div>
+      <div id='popover' className='popover fade show bs-popover-top'>
+        <div className="arrow"></div>
+        <div className="popover-body">
+          <div className="form-group">
+            <label>Comment:</label>
+            <textarea className="form-control"  rows="3"></textarea>
+            <button className='btn btn-primary btn-sm' style={{marginTop:'15px'}}>OK</button>
+          </div>
+        </div>
+      </div>
       <div id='map'>
+      </div>
       </div>
     );
   }
