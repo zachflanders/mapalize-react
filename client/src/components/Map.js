@@ -20,6 +20,7 @@ var layers = [
     })
   })
 ];
+var featureLayers = [];
 
 var drawingLayersCreated = false;
 
@@ -39,7 +40,8 @@ class Map extends React.Component {
   render(){
     if(this.props.mapInfo.features && drawingLayersCreated == false){
       map.getView().setZoom(this.props.mapInfo.zoom);
-      map.getView().setCenter(ol.proj.fromLonLat(this.props.mapInfo.center))
+      map.getView().setCenter(ol.proj.fromLonLat(this.props.mapInfo.center));
+      var self = this;
       this.props.mapInfo.features.forEach(function(feature, index){
         var featureColor = ol.color.asArray(feature.color);
         featureColor = featureColor.slice();
@@ -66,21 +68,24 @@ class Map extends React.Component {
           if(feature.editing == false){
             draw[feature.name].setActive(false);
           }
-          map.addLayer(new ol.layer.Vector({
-            source: source[feature.name],
-            style: new ol.style.Style({
-              stroke: new ol.style.Stroke({
-                color: featureColor,
-                width: 8
-              }),
-              image: new ol.style.Circle({
-                radius: 6,
-                fill: new ol.style.Fill({
-                  color: featureColor
+          featureLayers.push(
+            new ol.layer.Vector({
+              source: source[feature.name],
+              style: new ol.style.Style({
+                stroke: new ol.style.Stroke({
+                  color: featureColor,
+                  width: 8
+                }),
+                image: new ol.style.Circle({
+                  radius: 6,
+                  fill: new ol.style.Fill({
+                    color: featureColor
+                  })
                 })
               })
             })
-          }));
+          )
+
         }
         else{
           featureColor[3] = 0.8;
@@ -101,37 +106,52 @@ class Map extends React.Component {
           if(feature.editing == false){
             draw[feature.name].setActive(false);
           }
-          map.addLayer(new ol.layer.Vector({
-            source: source[feature.name],
-            style: new ol.style.Style({
-              image: new ol.style.Icon({
-                src: 'mapicon2.png',
-                scale: 0.07,
-                color: featureColor,
-                anchor: [0.5, 1]
+          featureLayers.push(
+            new ol.layer.Vector({
+              source: source[feature.name],
+              style: new ol.style.Style({
+                image: new ol.style.Icon({
+                  src: 'mapicon2.png',
+                  scale: 0.07,
+                  color: featureColor,
+                  anchor: [0.5, 1]
+                })
               })
             })
-          }));
+          );
         }
         draw[feature.name].on('drawend', function (e) {
           draw[feature.name].setActive(false);
+          self.props.endEditState(feature);
         });
+
       });
+      featureLayers.forEach(function(layer){
+        map.addLayer(layer);
+      })
       drawingLayersCreated = true;
     }
     else if(this.props.mapInfo.features && drawingLayersCreated == true){
-      var self = this;
-      this.props.mapInfo.features.forEach(function(feature){
-        if(feature.editing == true){
-          draw[feature.name].setActive(true);
-        }
-        else{
-          draw[feature.name].setActive(false);
-        }
-        draw[feature.name].on('drawend', function (e) {
-          self.props.endEditState(feature);
+      var numDrawEnds = 0;
+      if(this.props.isInput == true){
+        featureLayers.forEach(function(layer){
+          layer.setVisible(true);
+        })
+        var self = this;
+        this.props.mapInfo.features.forEach(function(feature, index){
+          if(feature.editing == true){
+            draw[feature.name].setActive(true);
+          }
+          else{
+            draw[feature.name].setActive(false);
+          }
         });
-      })
+      }
+      else{
+        featureLayers.forEach(function(layer){
+          layer.setVisible(false);
+        })
+      }
     };
     return(
       <div id='map'>

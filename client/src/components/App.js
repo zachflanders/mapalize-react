@@ -9,7 +9,7 @@ import 'fontawesome/svg-with-js/js/fontawesome-all.js'
 import axios from 'axios';
 import Map from './Map.js';
 import Nav from './Nav.js';
-import Sidebar from './Sidebar.js'
+import Sidebar from './sidebar/Sidebar.js'
 
 var source = [];
 var map;
@@ -39,6 +39,7 @@ class App extends React.Component {
   }
   startEditState(item){
      var mapInfoState = this.state.mapInfo;
+     mapInfoState.editing = true;
      if(mapInfoState.features){
        mapInfoState.features.forEach(function(feature, index){
          if(feature.name == item.name){
@@ -53,6 +54,7 @@ class App extends React.Component {
    }
    endEditState(item){
       var mapInfoState = this.state.mapInfo;
+      mapInfoState.editing=false;
       if(mapInfoState.features){
         mapInfoState.features.forEach(function(feature, index){
           mapInfoState.features[index].editing = false;
@@ -69,6 +71,7 @@ class App extends React.Component {
         mapInfo.features.forEach(function(feature, index){
           mapInfo.features[index].editing = false;
         })
+        mapInfo.editing = false;
         this.setState({ mapInfo });
       });
   }
@@ -80,9 +83,10 @@ class App extends React.Component {
   renderSidebar(isInput){
     return (
       <Sidebar
-        value={this.state.isInput}
+        isInput={this.state.isInput}
         mapInfo = {this.state.mapInfo}
         startEditState={this.startEditState}
+        endEditState = {this.endEditState}
       />
     );
   }
@@ -98,7 +102,7 @@ class App extends React.Component {
   renderMap(isInput){
     return(
       <Map
-        value={this.state.isInput}
+        isInput={this.state.isInput}
         mapInfo = {this.state.mapInfo}
         endEditState={this.endEditState}
       />
